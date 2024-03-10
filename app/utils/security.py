@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from jose import jwt
-from jwt import decode, ExpiredSignatureError, DecodeError
+from jwt import decode
 from passlib.context import CryptContext
 
 load_dotenv()
@@ -32,13 +32,8 @@ class Security:
         return encoded_jwt
 
     def decode_token(self, token: str):
-        credentials_exception = DecodeError(
-            # description="Could not validate credentials", error="invalid_token", headers={"WWW-Authenticate": "Bearer"}
-        )
         try:
             payload = decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             return payload
-        except ExpiredSignatureError:
-            raise credentials_exception
-        except DecodeError:
-            raise credentials_exception
+        except Exception:
+            raise ValueError("Token error")
